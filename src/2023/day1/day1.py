@@ -39,6 +39,7 @@ for line in contents:
     nums = list(map(get_number,matches))
     total += int(nums[0] + nums[-1])
 
+# first iteration
 # for line in contents:
 #     matches = re.findall(p, line)
 #     if len(matches) == 0:
