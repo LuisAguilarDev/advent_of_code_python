@@ -128,3 +128,8 @@ for r, row in enumerate(matrix):
             result += get_gear_mul(coordinates)
 
 assert (result == 84051670)
+
+# guardar en una estructura de datos los numeros y sus posiciones
+# recorrer la estructura de datos y buscar los numeros adyacentes
+# formar los numeros y sumarlos
+# para la parte 2, multiplicar los numeros en lugar de sumarlos
