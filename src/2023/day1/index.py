@@ -34,26 +34,32 @@ assert (test2 == 0)
 assert (result == 54573)
 
 # Part 2
-# numbers = {"one": "1", "two": "2", "three": "3", "four": "4",
-#            "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9"}
+dict_numbers = {"one": "1", "two": "2", "three": "3", "four": "4",
+                "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9"}
 
 
-# def get_number(s: str):
-#     if s in numbers:
-#         return numbers[s]
-#     return s
+def get_number_from_dict(s: str):
+    if s in dict_numbers:
+        return dict_numbers[s]
+    return s
 
 
-# # lookahead to capture overlapped patterns by default \ are escape in python 3.13.1
-# pattern = "(?=(" + "|".join(numbers.keys()) + "|\d))"
-# p = re.compile(pattern)
+def get_coincidende_numbers_from_string(s: str):
+    pattern = "(?=(" + "|".join(dict_numbers.keys()) + "|\d))"
+    p = re.compile(pattern)
+    return p.findall(s)
 
-# total = 0
-# for line in contents:
-#     matches = re.findall(p, line)
-#     if len(matches) == 0:
-#         continue
-#     nums = list(map(get_number, matches))
-#     total += int(nums[0] + nums[-1])
 
-# assert (total == 54591)
+def sum_calibration_letters(contents: list[str]) -> int:
+    total = 0
+    for line in contents:
+        matches = get_coincidende_numbers_from_string(line)
+        if len(matches) == 0:
+            continue
+        nums = list(map(get_number_from_dict, matches))
+        total += int(nums[0] + nums[-1])
+    return total
+
+
+total = sum_calibration_letters(contents)
+assert (total == 54591)
