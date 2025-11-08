@@ -1,9 +1,11 @@
 {
   "python.analysis.extraPaths": [
+    "./",
     "src"
   ],
+  "python.envFile": "${workspaceFolder}/advent_of_code_python/.env",
   "files.exclude": {
-    "**/__pycache__/": true,
+    "**/__pycache__": true,
     "**/__init__.py": true
   },
   "files.watcherExclude": {
