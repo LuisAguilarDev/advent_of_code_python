@@ -55,7 +55,6 @@ def sum_calibration_letters(contents: list[str]) -> int:
     for line in contents:
         matches = get_coincidende_numbers_from_string(line)
         if len(matches) == 0:
-            logger.info("No coincidence found, skipping line.")
             continue
         nums = list(map(get_number_from_dict, matches))
         total += int(nums[0] + nums[-1])
