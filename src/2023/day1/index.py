@@ -4,7 +4,7 @@ from global_utils.logger import logger
 
 logger.info("---- Day 1: Trebuchet?! ----")
 
-# Part 1
+logger.info("Part 1")
 contents = read_file("input.txt")
 
 
@@ -26,6 +26,7 @@ def sum_calibration(contents: list[str]) -> int:
 
 
 result = sum_calibration(contents)
+logger.info(f"Sum of calibrations: {result}")
 test = sum_calibration(["1asdasdasd6"])
 assert (test == 16)
 test2 = sum_calibration(["asdasdasd"])
@@ -33,7 +34,7 @@ assert (test2 == 0)
 
 assert (result == 54573)
 
-# Part 2
+logger.info("Part 2")
 dict_numbers = {"one": "1", "two": "2", "three": "3", "four": "4",
                 "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9"}
 
@@ -64,4 +65,5 @@ def sum_calibration_letters(contents: list[str]) -> int:
 assert 0 == sum_calibration_letters(
     ["nonumbershere", "alsononumbershere"])
 total = sum_calibration_letters(contents)
+logger.info(f"Sum of calibrations with letters: {total}")
 assert (total == 54591)

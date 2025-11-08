@@ -1,15 +1,15 @@
-import os
 import re
 from constants.constants import all_directions, horizontal_directions
+from global_utils.utils import read_file
+from global_utils.logger import logger
 
-file_path = os.path.join(os.path.dirname(__file__), "input.txt")
-sample_path = os.path.join(os.path.dirname(__file__), "sample.txt")
-with open(file_path, "r") as file:
-    contents = file.read().splitlines()
-with open(sample_path, "r") as file:
-    sample_contents = file.read().splitlines()
+logger.info("---- Day 3: Gear Ratios ----")
 
-# Part 1
+contents = read_file("input.txt")
+sample_contents = read_file("sample.txt")
+
+logger.info("Part 1")
+
 # Build a matrix from input
 
 
