@@ -10,8 +10,6 @@ sample_contents = read_file("sample.txt")
 
 logger.info("Part 1")
 
-# Build a matrix from input
-
 
 def search_numbers_coordinates(matrix, sr, sc):
     if (sr, sc) in visited:
@@ -42,7 +40,7 @@ def search_numbers_coordinates(matrix, sr, sc):
     return found
 
 
-def get_number_sum(found):
+def get_number_sum(found, matrix):
     total = 0
     found.sort()
     current_number = ""
@@ -69,27 +67,35 @@ def get_number_sum(found):
     return total
 
 
+def build_schematic(contents):
+    matrix = list()
+    for line in contents:
+        # split each character and add to list
+        row = list(line)
+        matrix.append(row)
+    return matrix
+
+
+def sum_of_part_numbers_in_schematic(schematic):
+    result = 0
+    for r, row in enumerate(schematic):
+        for c, char in enumerate(row):
+            if re.match(r"[^\d.]", char):
+                coordinates = search_numbers_coordinates(schematic, r, c)
+                result += get_number_sum(coordinates, schematic)
+    return result
+
+
 visited = set()
-matrix = list()
-for line in contents:
-    # split each character and add to list
-    row = list(line)
-    matrix.append(row)
-
-result = 0
-for r, row in enumerate(matrix):
-    for c, char in enumerate(row):
-        if re.match(r"[^\d.]", char):
-            coordinates = search_numbers_coordinates(matrix, r, c)
-            result += get_number_sum(coordinates)
-
+base_schematic = build_schematic(contents)
+result = sum_of_part_numbers_in_schematic(base_schematic)
+logger.info(f"Sum of gear ratios: {result}")
 assert (result == 532428)
 
-# Part 2
-# gear any symbol
+logger.info(f"Part 2")
 
 
-def get_gear_mul(found):
+def get_gear_mul(found, matrix):
     found.sort()
     numbers = list()
     current_number = ""
@@ -119,17 +125,17 @@ def get_gear_mul(found):
     return 0
 
 
+def sum_gear_ratio(schematic):
+    result = 0
+    for r, row in enumerate(schematic):
+        for c, char in enumerate(row):
+            if re.match(r"[^\d.]", char):
+                coordinates = search_numbers_coordinates(schematic, r, c)
+                result += get_gear_mul(coordinates, schematic)
+    return result
+
+
 visited = set()
-result = 0
-for r, row in enumerate(matrix):
-    for c, char in enumerate(row):
-        if re.match(r"[^\d.]", char):
-            coordinates = search_numbers_coordinates(matrix, r, c)
-            result += get_gear_mul(coordinates)
-
+result = sum_gear_ratio(base_schematic)
+logger.info(f"Sum of gear ratios: {result}")
 assert (result == 84051670)
-
-# guardar en una estructura de datos los numeros y sus posiciones
-# recorrer la estructura de datos y buscar los numeros adyacentes
-# formar los numeros y sumarlos
-# para la parte 2, multiplicar los numeros en lugar de sumarlos

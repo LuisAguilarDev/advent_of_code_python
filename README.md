@@ -45,19 +45,19 @@ advent_of_code_python/
 2. **Open a terminal in VS Code.**
 3. **Run the solution as a module:**
 
-   **From the repository root:**
-   ```sh
-   python -m src.2023.day1.index
-   ```
-
-   **Or from the src directory:**
+   **Recommended: from the src directory:**
    ```sh
    cd src
    python -m 2023.day1.index
    ```
 
+   **Or from the repository root:**
+   ```sh
+   python -m src.2023.day1.index
+   ```
+
 > **Note:**
-> Running as a module ensures all imports work correctly! Use dots (.) to separate path components, not slashes (/), and omit the .py extension.
+> Running as a module ensures all imports work correctly! Use dots (.) to separate path components, not slashes (/), and omit the .py extension. Some modules may require running from the src directory due to import paths.
 
 ### 🧪 Running Tests
 
