@@ -1,5 +1,4 @@
 import math
-from turtle import distance
 from global_utils.utils import read_file
 from global_utils.logger import logger
 import time
