@@ -1,56 +1,45 @@
-import os
-# ---- Day 5: If You Give A Seed A Fertilizer ----
-file_path = os.path.join(os.path.dirname(__file__), "input.txt")
-sample_path = os.path.join(os.path.dirname(__file__), "sample.txt")
-with open(file_path, "r") as file:
-    contents = file.read().splitlines()
-with open(sample_path, "r") as file:
-    sample_contents = file.read().splitlines()
+from global_utils.utils import read_file
+from global_utils.logger import logger
 
-# Part 1
-seeds = list()
-current_section = None
-maps = dict()
+logger.info("---- Day 5: If You Give A Seed A Fertilizer ----")
 
-areas = ["seed-to-soil", "soil-to-fertilizer", "fertilizer-to-water",
-         "water-to-light", "light-to-temperature", "temperature-to-humidity",
-         "humidity-to-location"]
+contents = read_file("input.txt")
+sample_contents = read_file("sample.txt")
 
-for line in contents:
-    if line.startswith("seeds:"):
-        seeds = [int(seed) for seed in line.split(":")[1].strip().split()]
-    if not line:
-        current_section = None
-        continue
-    if current_section:
-        if current_section not in maps:
-            maps[current_section] = []
-        maps[current_section].append([int(x) for x in line.split()])
+logger.info("Part 1")
 
-    for area in areas:
-        if line.startswith(area):
-            current_section = area
-            break
 
-# build the ranges and final numbers
+def parse_data(contents):
+    seeds = list()
+    maps = list()
+    current_section = -1
+    for line in contents:
+        if line.startswith("seeds:"):
+            seeds = [int(seed) for seed in line.split(":")[1].strip().split()]
+            continue
+        if not line:
+            continue
+        if "map" in line:
+            current_section += 1
+            maps.append([])
+            continue
+        if current_section >= 0:
+            maps[current_section].append([int(x) for x in line.split()])
+    return seeds, maps
+
+
+seeds, maps = parse_data(contents)
 
 
 def get_min_location_from_seeds(seeds):
     result_min = float('inf')
-    # part 2 caching
-    cache = {}
     for seed in seeds:
-        if seed in cache:
-            result_min = min(result_min, cache[seed])
-            continue
         seed_num = seed
-        # seed -> soil
         current_number = seed_num
         next_number = None
-        for area in areas:
-            lines = maps.get(area)
-            for line in lines:
-                soil, seed, r = line
+        for area in maps:
+            for info in area:
+                soil, seed, r = info
                 start, end = [seed, seed + r - 1]
                 if start <= current_number <= end:
                     next_number = current_number + soil - seed
@@ -59,67 +48,84 @@ def get_min_location_from_seeds(seeds):
                 next_number = current_number
             current_number = next_number
             next_number = None
-        cache[seed] = current_number
         result_min = min(result_min, current_number)
     return result_min
 
 
 result_min = get_min_location_from_seeds(seeds)
 
-# assert (result_min == 836040384)
+logger.info(f"Minimum location from seeds is {result_min}")
+assert (result_min == 836040384)
 
-# Part 2
+logger.info("Part 2")
+
+
+def get_range_seeds(seeds):
+    ranges = []
+    for i in range(0, len(seeds), 2):
+        start = seeds[i]
+        length = seeds[i + 1]
+        ranges.append((start, start + length - 1))
+    return ranges
 
 
 def get_min_location_from_seeds_optimized(seeds):
-    current_ranges = list()
-    for seed_i in range(0, len(seeds), 2):
-        next_ranges = list()
-        seed_num = seeds[seed_i]
-        seed_range = seeds[seed_i + 1]
-        current_ranges.append((seed_num, seed_num + seed_range - 1))
+    current_ranges = get_range_seeds(seeds)
 
-    # seed -> soil
-    iteration = 0
-    for area in areas:
-        iteration += 1
-        lines = maps.get(area)
-        area_ranges = []
-        for line in lines:
-            soil, seed, r = line
-            start, end = [seed, seed + r - 1]
-            area_ranges.append((start, end, soil - seed))
-        area_ranges.sort()
-        while current_ranges:
-            c_start, c_end = current_ranges.pop(0)
-            overlap_found = False
-            total = len(area_ranges)
-            current = 0
-            for a_start, a_end, offset in area_ranges:
-                current += 1
-                if a_end < c_start:
-                    continue
-                if a_start > c_end:
-                    break
-                # overlap
-                overlap_found = True
-                n_start = max(c_start, a_start) + offset
-                n_end = min(c_end, a_end) + offset
+    for area in maps:
+        current_ranges = get_new_ranges(current_ranges, area)
 
-                # outside the ranges we keep the same values
-                if n_end + 1 - offset <= c_end and current == total:
-                    next_ranges.append((n_end + 1 - offset, c_end))
-                if current == 1 and a_start > c_start:
-                    next_ranges.append((c_start, n_start - 1 - offset))
+    current_ranges.sort()
+    return current_ranges[0][0]
 
-                next_ranges.append((n_start, n_end))
-            if not overlap_found:
-                next_ranges.append((c_start, c_end))
-        current_ranges = next_ranges
-        next_ranges = list()
-    return sorted(current_ranges)[0][0]
+
+def get_area_ranges(area):
+    area_ranges = []
+    for dest_start, source_start, length in area:
+        source_end = source_start + length - 1
+        offset = dest_start - source_start
+        area_ranges.append((source_start, source_end, offset))
+    return area_ranges
+
+
+def get_new_ranges(current_ranges, area):
+    area_ranges = get_area_ranges(area)
+    next_ranges = []
+    for c_start, c_end in current_ranges:
+        next_ranges.extend(
+            transform_single_range(c_start, c_end, area_ranges))
+
+    return next_ranges
+
+
+def transform_single_range(c_start, c_end, area_ranges):
+    result_ranges = []
+    remaining_start = c_start
+    area_ranges.sort()  # To process each area from lowest to highest
+
+    for a_start, a_end, offset in area_ranges:
+        if a_end < remaining_start:
+            continue  # Area range is completely before remaining range
+        if a_start > c_end:
+            break  # Area range is completely after current range
+
+        # Handle the part before this area range (if any)
+        if remaining_start < a_start:
+            result_ranges.append((remaining_start, a_start - 1))
+            remaining_start = a_start
+
+        # Handle the overlap
+        overlap_start = max(remaining_start, a_start)
+        overlap_end = min(c_end, a_end)
+        if overlap_start <= overlap_end:
+            transformed_start = overlap_start + offset
+            transformed_end = overlap_end + offset
+            result_ranges.append((transformed_start, transformed_end))
+            remaining_start = overlap_end + 1
+
+    return result_ranges
 
 
 result = get_min_location_from_seeds_optimized(seeds)
-
+logger.info(f"Minimum location from seeds is {result}")
 assert (result == 10834440)
