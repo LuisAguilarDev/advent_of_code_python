@@ -3,13 +3,6 @@ from global_utils.utils import read_file
 from global_utils.logger import logger
 import time
 
-logger.info("---- Day 6: Wait For It ----")
-
-contents = read_file("input.txt")
-sample_contents = read_file("sample.txt")
-
-logger.info("Part 1")
-
 
 def get_time_distance_lists(contents):
     times = []
@@ -20,9 +13,6 @@ def get_time_distance_lists(contents):
         if line.startswith("Distance:"):
             distances = line.split(":")[1].strip().split()
     return times, distances
-
-
-times, distances = get_time_distance_lists(contents)
 
 
 def get_product_of_possibilities(times, distances):
@@ -42,13 +32,6 @@ def get_product_of_possibilities(times, distances):
     return math.prod(all_posibles)
 
 
-result = get_product_of_possibilities(times, distances)
-logger.info(f"Result part 1: {result}")
-assert (result == 449820)
-
-logger.info("Part 2")
-
-
 def get_time_distance(contents):
     for line in contents:
         if line.startswith("Time:"):
@@ -58,12 +41,8 @@ def get_time_distance(contents):
     return int(t_time), int(t_distance)
 
 
-race_time, race_distance = get_time_distance(contents)
-
-# Cuadratic equation: x^2 - time*x + distance = 0
-
-
 def cuadratic_equation(a, b, c):
+    # Cuadratic equation: x^2 - time*x + distance = 0
     discriminant = b**2 - 4 * a * c
     if discriminant < 0:
         return None, None
@@ -82,27 +61,18 @@ def get_ways_to_beat_cuadratic(race_time, race_distance):
     return xt2 - xt1 + 1
 
 
-result = get_ways_to_beat_cuadratic(race_time, race_distance)
-logger.info(f"Result cuadratic equation approach: {result}")
-assert (result == 42250895)
+def get_ways_to_beat_hyperneutrino(time, distance):
+    # Hyper neutrino solution https://github.com/hyperneutrino/hyperneutrino
+    n = 1
+    margin = 0
+    for hold in range(time):
+        if hold * (time - hold) > distance:
+            margin += 1
+    n *= margin
+    return n
 
 
-# Hyper neutrino solution
-# time_start = time.time()
-# n = 1
-# margin = 0
-# for hold in range(race_time):
-#     if hold * (race_time - hold) >= race_distance:
-#         margin += 1
-# n *= margin
-# time_end = time.time()
-# execution_time = time_end - time_start
-# logger.info(
-#     f"Execution time for hyper neutrino approach: {execution_time:.6f} seconds")
-# logger.info(f"Result hyper neutrino approach: {n}")
-
-
-def binary_search_approach(race_time, race_distance):
+def get_ways_to_beat_binary_search(race_time, race_distance):
     # Find the minimum hold time that beats the distance
     low = 0
     high = race_time
@@ -134,11 +104,46 @@ def binary_search_approach(race_time, race_distance):
     return (race_time - min_hold) - min_hold + 1
 
 
-time_start = time.time()
-result = binary_search_approach(race_time, race_distance)
-time_end = time.time()
-execution_time = time_end - time_start
-logger.info(f"Result binary search approach: {result}")
-assert (result == 42250895)
-logger.info(
-    f"Execution time for binary search approach: {execution_time:.6f} seconds")
+def do_part_1() -> bool:
+    logger.info("Part 1")
+    contents = read_file("input.txt")
+    times, distances = get_time_distance_lists(contents)
+    return 449820 == get_product_of_possibilities(times, distances)
+
+
+def do_part_2() -> bool:
+    logger.info(f"Part 2")
+    contents = read_file("input.txt")
+    race_time, race_distance = get_time_distance(contents)
+    return 42250895 == get_ways_to_beat_cuadratic(race_time, race_distance)
+
+
+def do_part_2_hyperneutrino() -> bool:
+    logger.info(f"Part 2 - Hyperneutrino")
+    contents = read_file("input.txt")
+    race_time, race_distance = get_time_distance(contents)
+    return 42250895 == get_ways_to_beat_hyperneutrino(race_time, race_distance)
+
+
+def do_part_2_binary_search() -> bool:
+    logger.info(f"Part 2 - Binary Search")
+    contents = read_file("input.txt")
+    race_time, race_distance = get_time_distance(contents)
+    return 42250895 == get_ways_to_beat_binary_search(race_time, race_distance)
+
+
+def main():
+    logger.info("---- Day 6: Wait For It ----")
+    result_part_1 = do_part_1()
+    assert (True == result_part_1)
+    result_part_2 = do_part_2()
+
+    assert (True == result_part_2)
+    result_part_2_hyperneutrino = do_part_2_hyperneutrino()
+    assert (True == result_part_2_hyperneutrino)
+    result_part_2_binary_search = do_part_2_binary_search()
+    assert (True == result_part_2_binary_search)
+
+
+if __name__ == "__main__":
+    main()
