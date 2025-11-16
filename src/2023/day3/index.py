@@ -1,17 +1,10 @@
-import re
 from constants.constants import all_directions, horizontal_directions
 from global_utils.utils import read_file
 from global_utils.logger import logger
 
-logger.info("---- Day 3: Gear Ratios ----")
-
-contents = read_file("input.txt")
-sample_contents = read_file("sample.txt")
-
-logger.info("Part 1")
-
 
 def search_numbers_coordinates(matrix, sr, sc):
+    visited = set()
     if (sr, sc) in visited:
         return 0
     ROWS, COLS = len(matrix), len(matrix[0])
@@ -19,10 +12,10 @@ def search_numbers_coordinates(matrix, sr, sc):
     found = list()
     for dr, dc in all_directions:
         nr, nc = sr + dr, sc + dc
-        if not (0 <= nr < ROWS and 0 <= nc < COLS):
+        if (nr, nc) in visited or nr < 0 or nr >= ROWS or nc < 0 or nc >= COLS:
             continue
         char = matrix[nr][nc]
-        if re.match(r"\d", char) and (nr, nc) not in visited:
+        if char in "0123456789":
             stack.append((nr, nc))
             visited.add((nr, nc))
             found.append((nr, nc))
@@ -30,10 +23,10 @@ def search_numbers_coordinates(matrix, sr, sc):
         r, c = stack.pop()
         for dr, dc in horizontal_directions:
             nr, nc = r + dr, c + dc
-            if not (0 <= nr < ROWS and 0 <= nc < COLS):
+            if (nr, nc) in visited or nr < 0 or nr >= ROWS or nc < 0 or nc >= COLS:
                 continue
             char = matrix[nr][nc]
-            if re.match(r"\d", char) and (nr, nc) not in visited:
+            if char in "0123456789":
                 found.append((nr, nc))
                 visited.add((nr, nc))
                 stack.append((nr, nc))
@@ -80,19 +73,17 @@ def sum_of_part_numbers_in_schematic(schematic):
     result = 0
     for r, row in enumerate(schematic):
         for c, char in enumerate(row):
-            if re.match(r"[^\d.]", char):
+            if char not in "0123456789.":
                 coordinates = search_numbers_coordinates(schematic, r, c)
                 result += get_number_sum(coordinates, schematic)
     return result
 
 
-visited = set()
-base_schematic = build_schematic(contents)
-result = sum_of_part_numbers_in_schematic(base_schematic)
-logger.info(f"Sum of gear ratios: {result}")
-assert (result == 532428)
-
-logger.info(f"Part 2")
+def do_part_1() -> bool:
+    logger.info("Part 1")
+    contents = read_file("input.txt")
+    base_schematic = build_schematic(contents)
+    return 532428 == sum_of_part_numbers_in_schematic(base_schematic)
 
 
 def get_gear_mul(found, matrix):
@@ -129,13 +120,26 @@ def sum_gear_ratio(schematic):
     result = 0
     for r, row in enumerate(schematic):
         for c, char in enumerate(row):
-            if re.match(r"[^\d.]", char):
+            if char not in "0123456789.":
                 coordinates = search_numbers_coordinates(schematic, r, c)
                 result += get_gear_mul(coordinates, schematic)
     return result
 
 
-visited = set()
-result = sum_gear_ratio(base_schematic)
-logger.info(f"Sum of gear ratios: {result}")
-assert (result == 84051670)
+def do_part_2() -> bool:
+    logger.info(f"Part 2")
+    contents = read_file("input.txt")
+    base_schematic = build_schematic(contents)
+    return sum_gear_ratio(base_schematic) == 84051670
+
+
+def main():
+    logger.info("---- Day 3: Gear Ratios ----")
+    result_part_1 = do_part_1()
+    assert (True == result_part_1)
+    result_part_2 = do_part_2()
+    assert (True == result_part_2)
+
+
+if __name__ == "__main__":
+    main()
