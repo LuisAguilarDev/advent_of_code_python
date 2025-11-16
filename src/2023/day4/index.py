@@ -1,13 +1,6 @@
 from global_utils.utils import read_file
 from global_utils.logger import logger
 
-logger.info("---- Day 4: Scratchcards ----")
-
-contents = read_file("input.txt")
-sample_contents = read_file("sample.txt")
-
-logger.info("Part 1")
-
 
 def get_cards(contents: list[str]):
     cards = list()
@@ -21,9 +14,6 @@ def get_cards(contents: list[str]):
     return cards
 
 
-cards = get_cards(contents)
-
-
 def sum_of_worth(cards: list[tuple[set[int], set[int]]]) -> int:
     result = 0
     for winning, having in cards:
@@ -32,13 +22,6 @@ def sum_of_worth(cards: list[tuple[set[int], set[int]]]) -> int:
             continue
         result += 2 ** (len(intersection) - 1)
     return result
-
-
-result = sum_of_worth(cards)
-logger.info(f"Total worth of all scratchcards is {result}")
-assert (28538 == result)
-
-logger.info("Part 2")
 
 
 def total_cards_end_up(cards: list[tuple[set[int], set[int]]]) -> int:
@@ -53,7 +36,7 @@ def total_cards_end_up(cards: list[tuple[set[int], set[int]]]) -> int:
         num_winned = len(winning.intersection(having))
         win_index = card_num + 1
         while num_winned > 0:
-            if win_index > len(contents):
+            if win_index > len(cards):
                 break
             if cards_dict.get(win_index) is None:
                 cards_dict[win_index] = 1
@@ -63,6 +46,27 @@ def total_cards_end_up(cards: list[tuple[set[int], set[int]]]) -> int:
     return total_cards
 
 
-result = total_cards_end_up(cards)
-logger.info(f"Total number of scratchcards end up is {result}")
-assert (result == 9425061)
+def do_part_1() -> bool:
+    logger.info("Part 1")
+    contents = read_file("input.txt")
+    cards = get_cards(contents)
+    return 28538 == sum_of_worth(cards)
+
+
+def do_part_2() -> bool:
+    logger.info(f"Part 2")
+    contents = read_file("input.txt")
+    cards = get_cards(contents)
+    return 9425061 == total_cards_end_up(cards)
+
+
+def main():
+    logger.info("---- Day 4: Scratchcards ----")
+    result_part_1 = do_part_1()
+    assert (True == result_part_1)
+    result_part_2 = do_part_2()
+    assert (True == result_part_2)
+
+
+if __name__ == "__main__":
+    main()
