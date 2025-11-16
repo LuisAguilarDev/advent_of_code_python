@@ -1,15 +1,6 @@
 from global_utils.utils import read_file
 from global_utils.logger import logger
 
-logger.info("---- Day 3: Gear Ratios (Alternative Approach) ----")
-
-contents = read_file("input.txt")
-sample_contents = read_file("sample.txt")
-
-logger.info("Part 1")
-
-matrix = [list(line.strip()) for line in contents]
-
 
 def extract_numbers(matrix):
     """Extrae todos los números con sus posiciones (fila, col_inicio, col_fin, valor)"""
@@ -78,16 +69,6 @@ def sum_of_schematic(numbers, symbols):
     return total
 
 
-numbers = extract_numbers(matrix)
-symbols = extract_symbols(matrix)
-
-result1 = sum_of_schematic(numbers, symbols)
-logger.info(f"Sum of part numbers: {result1}")
-assert (result1 == 532428)
-
-logger.info("Part 2")
-
-
 def sum_gear_ratio(numbers, symbols):
     total = 0
     symbols = [(r, c) for r, c in symbols]
@@ -101,6 +82,31 @@ def sum_gear_ratio(numbers, symbols):
     return total
 
 
-result2 = sum_gear_ratio(numbers, symbols)
-logger.info(f"Sum of gear ratios: {result2}")
-assert (result2 == 84051670)
+def do_part_1() -> bool:
+    logger.info("Part 1")
+    contents = read_file("input.txt")
+    matrix = [list(line.strip()) for line in contents]
+    numbers = extract_numbers(matrix)
+    symbols = extract_symbols(matrix)
+    return 532428 == sum_of_schematic(numbers, symbols)
+
+
+def do_part_2() -> bool:
+    logger.info(f"Part 2")
+    contents = read_file("input.txt")
+    matrix = [list(line.strip()) for line in contents]
+    numbers = extract_numbers(matrix)
+    symbols = extract_symbols(matrix)
+    return 84051670 == sum_gear_ratio(numbers, symbols)
+
+
+def main():
+    logger.info("---- Day 3: Gear Ratios (Alternative Approach) ----")
+    result_part_1 = do_part_1()
+    assert (True == result_part_1)
+    result_part_2 = do_part_2()
+    assert (True == result_part_2)
+
+
+if __name__ == "__main__":
+    main()
