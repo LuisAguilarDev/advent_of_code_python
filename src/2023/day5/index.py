@@ -1,13 +1,6 @@
 from global_utils.utils import read_file
 from global_utils.logger import logger
 
-logger.info("---- Day 5: If You Give A Seed A Fertilizer ----")
-
-contents = read_file("input.txt")
-sample_contents = read_file("sample.txt")
-
-logger.info("Part 1")
-
 
 def parse_data(contents):
     seeds = list()
@@ -28,10 +21,7 @@ def parse_data(contents):
     return seeds, maps
 
 
-seeds, maps = parse_data(contents)
-
-
-def get_min_location_from_seeds(seeds):
+def get_min_location_from_seeds(seeds, maps):
     result_min = float('inf')
     for seed in seeds:
         seed_num = seed
@@ -52,14 +42,6 @@ def get_min_location_from_seeds(seeds):
     return result_min
 
 
-result_min = get_min_location_from_seeds(seeds)
-
-logger.info(f"Minimum location from seeds is {result_min}")
-assert (result_min == 836040384)
-
-logger.info("Part 2")
-
-
 def get_range_seeds(seeds):
     ranges = []
     for i in range(0, len(seeds), 2):
@@ -69,7 +51,7 @@ def get_range_seeds(seeds):
     return ranges
 
 
-def get_min_location_from_seeds_optimized(seeds):
+def get_min_location_from_seeds_optimized(seeds, maps):
     current_ranges = get_range_seeds(seeds)
 
     for area in maps:
@@ -122,10 +104,30 @@ def transform_single_range(c_start, c_end, area_ranges):
             transformed_end = overlap_end + offset
             result_ranges.append((transformed_start, transformed_end))
             remaining_start = overlap_end + 1
-
     return result_ranges
 
 
-result = get_min_location_from_seeds_optimized(seeds)
-logger.info(f"Minimum location from seeds is {result}")
-assert (result == 10834440)
+def do_part_1() -> bool:
+    logger.info("Part 1")
+    contents = read_file("input.txt")
+    seeds, maps = parse_data(contents)
+    return 836040384 == get_min_location_from_seeds(seeds, maps)
+
+
+def do_part_2() -> bool:
+    logger.info(f"Part 2")
+    contents = read_file("input.txt")
+    seeds, maps = parse_data(contents)
+    return 10834440 == get_min_location_from_seeds_optimized(seeds, maps)
+
+
+def main():
+    logger.info("---- Day 5: If You Give A Seed A Fertilizer ----")
+    result_part_1 = do_part_1()
+    assert (True == result_part_1)
+    result_part_2 = do_part_2()
+    assert (True == result_part_2)
+
+
+if __name__ == "__main__":
+    main()
