@@ -167,9 +167,7 @@ def do_part_2() -> bool:
     logger.info(f"Part 2")
     contents = read_file("input.txt")
     games = parse_data(contents)
-    games = total_winings_part_2(games)
-    print(games)
-    return True
+    return 245461700 == total_winings_part_2(games)
 
 
 def main():
