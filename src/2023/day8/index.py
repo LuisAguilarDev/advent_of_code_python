@@ -20,6 +20,7 @@ def parse_data(contents):
 def count_steps(instructions: str, network: dict) -> int:
     steps = 0
     current_node = "AAA"
+    # como detectar un ciclo correectamente, entrar a un node con mismo indice?
     while True:
         if current_node == "ZZZ":
             return steps
@@ -64,10 +65,13 @@ def get_cycle(start_node: str, instructions: str, network: dict) -> tuple:
 
 def steps_from_a_z(data) -> int:
     instructions, network = data
+    logger.info(len(instructions))
     nodes = get_start_nodes(network)
     solution = list()
     for node in nodes:
         cycle_start, steps = get_cycle(node, instructions, network)
+        logger.info(
+            f"Node: {node}, Cycle start: {cycle_start}, Steps: {steps}")
         solution.append(cycle_start)
     # they only have 1 cycle not intermediate cycles
     # find lcm Least Common Multiple (English) in spanish Mínimo Común Múltiplo (MCM)
