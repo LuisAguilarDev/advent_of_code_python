@@ -25,15 +25,6 @@ def get_sum_invalid_ids(ranges: list[list[str]]) -> int:
     return sum
 
 
-def do_part_1() -> bool:
-    logger.info("Part 1")
-    contents = read_file("input.txt")
-    ranges = parse_data(contents)
-    sum = get_sum_invalid_ids(ranges)
-    logger.info(f"Sum: {sum}")
-    return 56660955519 == sum
-
-
 def is_invalid(i_str: str) -> bool:
     mid = len(i_str) // 2
     left = i_str[:mid]
@@ -62,6 +53,15 @@ def get_sum_invalid_ids_2(ranges: list[list[str]]) -> int:
             if is_invalid(i_str):
                 sum += i
     return sum
+
+
+def do_part_1() -> bool:
+    logger.info("Part 1")
+    contents = read_file("input.txt")
+    ranges = parse_data(contents)
+    sum = get_sum_invalid_ids(ranges)
+    logger.info(f"Sum: {sum}")
+    return 56660955519 == sum
 
 
 def do_part_2() -> bool:
