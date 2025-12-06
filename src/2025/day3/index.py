@@ -1,6 +1,5 @@
 from global_utils.utils import read_file
 from global_utils.logger import logger
-from graphviz import Digraph
 
 
 def parse_data(contents) -> list[list[str]]:
