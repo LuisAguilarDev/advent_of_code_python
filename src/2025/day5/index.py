@@ -76,8 +76,8 @@ def do_part_2() -> bool:
 
 def main():
     logger.info("---- Day 5: Cafeteria ----")
-    # result_part_1 = do_part_1()
-    # assert (True == result_part_1)
+    result_part_1 = do_part_1()
+    assert (True == result_part_1)
     result_part_2 = do_part_2()
     assert (True == result_part_2)
 
