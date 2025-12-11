@@ -13,8 +13,6 @@ def get_sum_invalid_ids(ranges: list[list[str]]) -> int:
     for start, end in ranges:
         for i in range(start, end + 1):
             i_str = str(i)
-            if len(i_str) == 1:
-                continue
             if len(i_str) % 2 == 1:
                 continue
             mid = len(i_str) // 2
@@ -26,17 +24,12 @@ def get_sum_invalid_ids(ranges: list[list[str]]) -> int:
 
 
 def is_invalid(i_str: str) -> bool:
-    mid = len(i_str) // 2
-    left = i_str[:mid]
-    right = i_str[mid:]
-    if left == right:
-        return True
-    posible_seqs = [1]
-    for seq_len in range(2, mid+1):
-        if len(i_str) % seq_len != 0:
-            continue
-        posible_seqs.append(seq_len)
-    for seq_len in reversed(posible_seqs):
+    """
+    Build the posible patterns by repeating substrings and compare
+    with the original string.
+    from length 1 to half the length of the string
+    """
+    for seq_len in range(1, len(i_str) // 2 + 1):
         pattern = i_str[:seq_len] * (len(i_str) // seq_len)
         if pattern == i_str:
             return True
