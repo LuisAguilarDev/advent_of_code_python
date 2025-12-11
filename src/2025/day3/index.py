@@ -8,31 +8,23 @@ def parse_data(contents) -> list[list[str]]:
         banks.append(list(list(line)))
     return banks
 
-
-def get_max_in_bank(bank: list[str]) -> int:
-    values = set()
-    for i in range(len(bank)):
-        for j in range(i + 1, len(bank)):
-            values.add(int(bank[i] + bank[j]))
-    return max(values)
-
-
-def get_total_joltage(banks: list[list[str]]) -> int:
-    total_joltage = 0
-    for bank in banks:
-        total_joltage += get_max_in_bank("".join(bank))
-    return total_joltage
-
+# brute force approach
+# def get_max_in_bank(bank: list[str]) -> int:
+#     values = set()
+#     for i in range(len(bank)):
+#         for j in range(i + 1, len(bank)):
+#             values.add(int(bank[i] + bank[j]))
+#     return max(values)
 
 def get_max_joltage(s: str, n: int = 12) -> int:
     result = []
     start = 0
 
     for i in range(n):
-        # Desde la posicion actual cuan lejos puedo ir
-        # Necesito dejar (n - i - 1) dígitos después
+        # From the current position, how far can I go
+        # I need to leave (n - i - 1) digits after
         end = len(s) - (n - i - 1)
-        # Encontrar el máximo en ese rango
+        # Find the maximum in that range
         best = start
         for j in range(start, end):
             if s[j] > s[best]:
@@ -43,6 +35,11 @@ def get_max_joltage(s: str, n: int = 12) -> int:
 
     return int(''.join(result))
 
+def get_total_joltage(banks: list[list[str]]) -> int:
+    total_joltage = 0
+    for bank in banks:
+        total_joltage += get_max_joltage("".join(bank), 2)
+    return total_joltage
 
 def get_total_joltage_part_2(banks: list[list[str]]) -> int:
     total_joltage = 0
