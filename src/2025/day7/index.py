@@ -100,7 +100,7 @@ def do_part_2() -> bool:
       logger.info(f"Start of beam at: {start}")
       result = count_timelines(grid,start)
       logger.info(f"Result Part 2: {result}")
-#     return 10875057285868 == result
+      return 187987920774390 == result
 
 
 def main():
@@ -108,7 +108,7 @@ def main():
     result_part_1 = do_part_1()
     assert (True == result_part_1)
     result_part_2 = do_part_2()
-    # assert (True == result_part_2)
+    assert (True == result_part_2)
 
 
 if __name__ == "__main__":
