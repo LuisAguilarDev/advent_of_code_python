@@ -23,6 +23,8 @@ def get_password(seqs) -> int:
             password += 1
     return password
 
+# it clicks on 0
+
 
 def get_password_part_2(seqs) -> int:
     password = 0
@@ -33,8 +35,14 @@ def get_password_part_2(seqs) -> int:
                 password += (dial + steps) // 100
             dial = (dial + steps) % 100
         else:
-            if dial - steps < 0:
-                password += math.ceil((steps - dial) / 100)
+            if dial == 0:
+                times = steps // 100
+            else:
+                if steps >= dial:
+                    times = (steps - dial) // 100 + 1
+                else:
+                    times = 0
+            password += times
             dial = (dial - steps) % 100
     return password
 
