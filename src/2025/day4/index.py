@@ -80,16 +80,8 @@ def get_total_removable_paper(grid: list[list[str]]) -> int:
     removable_papers = 0
     for r in range(R):
         for c in range(C):
-            if its_removable_paper(grid, r, c):
-                grid[r][c] = '.'
-                removable_papers += 1
-                for dr, dc in all_directions:
-                    nr, nc = r + dr, c + dc
-                    # Its outside the grid
-                    if nr < 0 or nc < 0 or nr >= R or nc >= C:
-                        continue
-                    removable_papers += recursive_remotion(
-                        grid, nr, nc)
+            removable_papers += recursive_remotion(
+                        grid, r, c)
     return removable_papers
 
 
