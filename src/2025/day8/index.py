@@ -74,7 +74,6 @@ def get_last_connection(positions: list[tuple[str, str, str]]) -> list:
     for position in positions:
         circuits.add(frozenset([position]))
     distances = sorted(build_distances(positions))
-    logger.info(f"Total distances: {len(distances)}")
     for data in distances:
         _, x1, y1, z1, x2, y2, z2 = data
         pos1 = (x1, y1, z1)
@@ -100,17 +99,23 @@ def get_last_connection(positions: list[tuple[str, str, str]]) -> list:
                 
     return circuits
 
+
+def multiply_first_larger_circuits(circuits,size=3):
+    sol = 1
+    for i, circuit in enumerate(circuits):
+        sol *= len(circuit)
+        if i == size - 1:
+            break
+    return sol
+
+
 def do_part_1() -> bool:
     logger.info("Part 1")
     contents = read_file("input.txt")
     positions = parse_data(contents)
     circuits = get_circuits(positions,1000)
     circuits = sorted(circuits, key=lambda x: len(x), reverse=True)
-    sol = 1
-    for i, circuit in enumerate(circuits):
-        sol *= len(circuit)
-        if i == 2:
-            break
+    sol = multiply_first_larger_circuits(circuits)
     logger.info(f"Solution: {sol}")
     return 117000 == sol
 
