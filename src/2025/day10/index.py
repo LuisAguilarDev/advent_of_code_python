@@ -3,6 +3,8 @@ from ortools.linear_solver import pywraplp
 from global_utils.utils import read_file
 from global_utils.logger import logger
 
+# https://www.youtube.com/watch?v=At6kCiP4o2Y - Using Google's Ortools Solver for Linear Programming in Python - Step by Step
+
 def parse_data(contents) -> list[list[str]]:
     machines = list() 
     for line in contents:
