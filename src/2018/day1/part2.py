@@ -2,31 +2,28 @@ from global_utils.utils import read_file
 from global_utils.logger import logger
 
 
-def parse_data(contents):
-    vars = list()
-    for line in contents:
-        vars.append(line)
-    return vars
-
-def get_repeated_frequency(vars) -> int:
-    seen = dict()
-    frequency = 0
-    seen[frequency] = 1
-    index = 0
-    while True:
-        for var in vars:
-            frequency += int(var)
-            if frequency not in seen:
-                seen[frequency] = 0
-            seen[frequency] += 1
-            if seen[frequency] > 1:
-                return frequency
-        index += 1
+# python understand _ on large numbers and removes them and they improve readability for humans
+def get_first_repeated_total(numbers, max_cycles=1_000_000) -> int:
+    """
+    Detects the first coincident value on a loop and returns it
+    
+    numbers is a list of numbers
+    max_cycles is the max number of iterations to avoid an infinite loop if no coincident number is found.
+    """
+    if len(numbers) == 0:
+        return 0
+    seen = set([0])
+    total = 0
+    for _ in range(max_cycles):
+        for number in numbers:
+            total += int(number)
+            if total in seen:
+                return total
+            seen.add(total)
 
 def do_part_2() -> bool:
     logger.info(f"Part 2")
-    contents = read_file("data/input.txt")
-    vars = parse_data(contents)
-    freq = get_repeated_frequency(vars)
-    logger.info(f"Password Part 2: {freq}")
-    return 709 == freq
+    numbers = read_file("data/input.txt")
+    repeated_total = get_first_repeated_total(numbers)
+    logger.info(f"Repeated total: {repeated_total}")
+    return 709 == repeated_total
