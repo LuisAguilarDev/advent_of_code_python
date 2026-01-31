@@ -52,6 +52,18 @@ La solucion implementa una variante usando conjuntos: si la interseccion de cara
 
 ---
 
+## 6. Checksum (Suma de Verificacion)
+
+Un checksum es un valor calculado a partir de un bloque de datos con el proposito de detectar errores o verificar integridad. Es una forma de "huella digital" que resume los datos en un valor compacto. Si los datos cambian, el checksum resultante sera diferente, permitiendo detectar modificaciones o corrupciones.
+
+El concepto fundamental detras de un checksum es la redundancia controlada: agregamos informacion extra (el checksum) que depende matematicamente de los datos originales. Esta dependencia permite verificar posteriormente si los datos se mantienen intactos comparando el checksum recalculado con el original almacenado.
+
+En el contexto de este problema (Day 2, 2018), el checksum se calcula multiplicando la cantidad de box IDs que contienen exactamente 2 letras repetidas por la cantidad que contienen exactamente 3 letras repetidas. Este checksum "personalizado" actua como una firma del conjunto de datos que permite verificar que se proceso correctamente todo el input.
+
+Los checksums varian en complejidad desde simples sumas aritmeticas hasta funciones hash criptograficas. La eleccion depende del balance entre velocidad de calculo, probabilidad de colision (dos inputs diferentes produciendo el mismo checksum), y resistencia a manipulacion intencional.
+
+---
+
 ## Ejercicios de practica
 
 - **LeetCode 242** - Valid Anagram (Frequency Counting)
@@ -60,6 +72,10 @@ La solucion implementa una variante usando conjuntos: si la interseccion de cara
 - **LeetCode 350** - Intersection of Two Arrays II (Frequency Counting)
 - **LeetCode 461** - Hamming Distance (String Similarity)
 - **LeetCode 1941** - Check if All Characters Have Equal Number of Occurrences (Frequency Analysis)
+- **LeetCode 1217** - Minimum Cost to Move Chips to The Same Position (Checksum/Parity)
+- **LeetCode 268** - Missing Number (Checksum con XOR)
+- **LeetCode 136** - Single Number (Checksum con XOR)
+- **LeetCode 389** - Find the Difference (Checksum con suma o XOR)
 
 ---
 
@@ -121,6 +137,35 @@ La solucion implementa una variante usando conjuntos: si la interseccion de cara
 
 ---
 
+## Checksum → Conceptos Avanzados
+
+**Materias relacionadas:** Redes de Computadoras, Sistemas Operativos, Seguridad Informatica, Teoria de la Informacion, Bases de Datos
+
+| Concepto Avanzado | Descripcion | Area de CS |
+|-------------------|-------------|------------|
+| **CRC (Cyclic Redundancy Check)** | Checksum basado en division polinomial, usado en Ethernet, USB, y almacenamiento | Redes / Sistemas |
+| **MD5 / SHA Family** | Funciones hash criptograficas que producen checksums de longitud fija resistentes a colisiones | Criptografia / Seguridad |
+| **Luhn Algorithm** | Checksum modular usado para validar numeros de tarjetas de credito e identificadores | Sistemas Financieros |
+| **Parity Bits** | Bit adicional para detectar errores de un solo bit en transmision de datos | Arquitectura de Computadoras |
+| **RAID Parity** | Checksum distribuido para recuperacion de datos en arreglos de discos | Sistemas Operativos |
+| **Merkle Trees** | Estructura de arbol donde cada nodo es un hash de sus hijos, usado en blockchain y Git | Sistemas Distribuidos |
+| **ECC (Error Correcting Codes)** | Codigos como Hamming y Reed-Solomon que no solo detectan sino corrigen errores | Teoria de la Informacion |
+| **Internet Checksum (RFC 1071)** | Checksum de 16 bits usado en protocolos IP, TCP, y UDP | Redes de Computadoras |
+
+### Utilidades Practicas de Checksums
+
+| Aplicacion | Tipo de Checksum | Uso Real |
+|------------|------------------|----------|
+| **Verificacion de descargas** | SHA-256, MD5 | Confirmar que un archivo descargado no esta corrupto |
+| **Control de versiones (Git)** | SHA-1 | Identificar commits y detectar cambios en archivos |
+| **Bases de datos** | CRC-32 | Verificar integridad de registros en disco |
+| **Comunicaciones de red** | CRC, Internet Checksum | Detectar errores en paquetes transmitidos |
+| **Almacenamiento** | RAID parity, ECC | Recuperar datos de discos fallidos o memoria corrupta |
+| **Blockchain** | SHA-256, Merkle Trees | Asegurar inmutabilidad de transacciones |
+| **Sistemas de archivos (ZFS, Btrfs)** | Checksums por bloque | Detectar y reparar bit rot silencioso |
+
+---
+
 ## Mapa Curricular
 
 ```
@@ -138,6 +183,15 @@ Semestre 1-2:              Semestre 3-4:                    Semestre 5+:
 | - Comparacion strings|──►| - Suffix Arrays            |──►| - Bioinformatica            |
 | - Distancia Hamming  |   | - Pattern Matching (KMP)   |   | - Error Correcting Codes    |
 +──────────────────────+   +────────────────────────────+   +─────────────────────────────+
+          │                            │                                │
+          ▼                            ▼                                ▼
++──────────────────────+   +────────────────────────────+   +─────────────────────────────+
+| - Checksums simples  |   | - CRC / Luhn Algorithm     |   | - SHA / MD5 (Criptografia)  |
+| - Parity bits        |──►| - Internet Checksum        |──►| - Merkle Trees (Blockchain) |
+| - XOR para deteccion |   | - Codigos de Hamming       |   | - Reed-Solomon / ECC        |
++──────────────────────+   +────────────────────────────+   +─────────────────────────────+
 ```
 
 Los conceptos del Day 2 son **building blocks** que aparecen repetidamente en niveles superiores de la carrera. El conteo de frecuencias evoluciona hacia algoritmos de streaming para Big Data. Las operaciones de conjuntos se extienden a estructuras probabilisticas como Bloom Filters. La comparacion de strings escala a sistemas de busqueda de similitud usados en motores de busqueda y bioinformatica.
+
+Los checksums comienzan como operaciones aritmeticas simples (sumas, XOR) y evolucionan hacia funciones hash criptograficas usadas en seguridad y blockchain. El concepto de detectar errores mediante redundancia es fundamental en redes, almacenamiento, y cualquier sistema donde la integridad de datos sea critica.
