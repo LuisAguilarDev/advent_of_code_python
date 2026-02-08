@@ -1,6 +1,7 @@
+from collections import Counter, defaultdict
+
 from global_utils.utils import read_file
 from global_utils.logger import logger
-
 
 def get_checksum(boxes) -> int:
     """
@@ -11,19 +12,10 @@ def get_checksum(boxes) -> int:
     count_2 = 0
     count_3 = 0
     for box in boxes:
-        chars_count = dict()
-        for char in box:
-            chars_count[char] = chars_count.get(char, 0) + 1
-        has_2 = False
-        has_3 = False
-        for count in chars_count.values():
-            if count == 2:
-                has_2 = True
-            elif count == 3:
-                has_3 = True
-        if has_2:
+        counts = Counter(box)
+        if 2 in counts.values():
             count_2 += 1
-        if has_3:
+        if 3 in counts.values():
             count_3 += 1
     return count_2 * count_3
 

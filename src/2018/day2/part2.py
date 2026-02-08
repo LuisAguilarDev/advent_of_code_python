@@ -3,11 +3,11 @@ from global_utils.logger import logger
 
 
 def get_common_letters_that_differs_by_one_char(boxes) -> str:
-    for box1 in boxes:
-        for box2 in boxes:
+    for i in range(len(boxes)):
+        for j in range(i+1, len(boxes)):
             letters = ""
             diff = 0
-            for c1, c2 in zip(box1, box2):
+            for c1, c2 in zip(boxes[i], boxes[j]):
                 if c1 == c2:
                     letters += c1
                 else:
