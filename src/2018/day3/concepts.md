@@ -8,7 +8,7 @@ Un sistema de coordenadas en grilla representa el espacio como una matriz bidime
 
 La discretizacion del espacio continuo en celdas permite usar estructuras de datos eficientes como arreglos 2D o hash maps. En lugar de calcular intersecciones geometricas complejas, simplemente verificamos si dos objetos ocupan la misma celda. Esta simplificacion transforma problemas de geometria computacional en problemas de conjuntos.
 
-En este problema, cada "claim" define un rectangulo en la grilla. Las coordenadas (columna, fila) indican la esquina superior izquierda, y las dimensiones (ancho, alto) definen cuantas celdas ocupa. Iterar sobre todas las celdas de un rectangulo es O(ancho * alto), lo cual es eficiente para rectangulos pequenos.
+En este problema, cada "register" define un rectangulo en la grilla. Las coordenadas (columna, fila) indican la esquina superior izquierda, y las dimensiones (ancho, alto) definen cuantas celdas ocupa. Iterar sobre todas las celdas de un rectangulo es O(ancho * alto), lo cual es eficiente para rectangulos pequenos.
 
 ---
 
@@ -18,7 +18,7 @@ La deteccion de colisiones entre rectangulos es un problema clasico en graficos,
 
 El enfoque "brute force" usado en este problema enumera cada celda de cada rectangulo y verifica si ya fue visitada. Aunque tiene complejidad O(n * area_promedio), es simple y suficiente para inputs moderados. Para grandes cantidades de rectangulos, se usarian estructuras como R-trees o sweep line algorithms.
 
-La solucion utiliza un set `visited` para rastrear celdas ocupadas. Cuando una celda ya esta en `visited`, se agrega a `overlaped`. Esta tecnica de "marcar y verificar" es un patron comun en deteccion de colisiones discretas.
+La solucion utiliza un set `visited` para rastrear celdas ocupadas. Cuando una celda ya esta en `visited`, se agrega a `overlapped`. Esta tecnica de "marcar y verificar" es un patron comun en deteccion de colisiones discretas.
 
 ---
 
@@ -36,7 +36,7 @@ Para grillas muy grandes o espacios continuos, se usarian funciones hash que agr
 
 La diferencia de conjuntos (A - B) retorna elementos que estan en A pero no en B. Es una operacion fundamental para filtrar elementos que cumplen o no cumplen ciertas condiciones.
 
-En Part 2, se mantienen dos sets: `visited` con todos los IDs de claims, y `overlapped` con IDs que tienen al menos un solapamiento. La diferencia `visited - overlapped` produce exactamente los IDs sin solapamiento. Esta operacion es O(|A|) y elegantemente resuelve el problema de filtrado.
+En Part 2, se mantienen dos sets: `visited` con todos los IDs de registers, y `overlapped` con IDs que tienen al menos un solapamiento. La diferencia `visited - overlapped` produce exactamente los IDs sin solapamiento. Esta operacion es O(|A|) y elegantemente resuelve el problema de filtrado.
 
 Este patron aparece frecuentemente: construir un "universo" de candidatos, construir un conjunto de "descalificados", y la diferencia produce los candidatos validos. Es mas eficiente que iterar y verificar cada candidato individualmente.
 
@@ -56,9 +56,9 @@ Para formatos mas complejos, se usarian expresiones regulares (regex) o parsers 
 
 Un diccionario puede funcionar como indice espacial mapeando posiciones a datos asociados. A diferencia de un set que solo responde "ocupado/vacio", un diccionario responde "quien ocupa esta posicion".
 
-En Part 2, `visited_dict[square] = id` almacena cual claim ocupa cada celda. Cuando se detecta colision, podemos recuperar el ID del claim previo y marcar ambos como solapados. Esta informacion adicional es crucial para identificar el claim sin solapamientos.
+En Part 2, `owners[coordinate] = id` almacena cual register ocupa cada celda. Cuando se detecta colision, podemos recuperar el ID del register previo y marcar ambos como solapados. Esta informacion adicional es crucial para identificar el register sin solapamientos.
 
-Este patron de "indice inverso" es comun en bases de datos y sistemas de busqueda: en lugar de buscar "que celdas ocupa el claim X", preguntamos "que claim ocupa la celda Y". Ambas direcciones de busqueda son O(1) con la estructura correcta.
+Este patron de "indice inverso" es comun en bases de datos y sistemas de busqueda: en lugar de buscar "que celdas ocupa el register X", preguntamos "que register ocupa la celda Y". Ambas direcciones de busqueda son O(1) con la estructura correcta.
 
 ---
 

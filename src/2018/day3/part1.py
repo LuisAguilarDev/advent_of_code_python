@@ -2,8 +2,15 @@ from global_utils.utils import read_file
 from global_utils.logger import logger
 
 
+def get_coordinates(r, c, w, h):
+    coordinates = set()
+    for dr in range(h):
+        for dc in range(w):
+            coordinates.add((r + dr, c + dc))
+    return coordinates
+
 def parse_data(lines):
-    claims = list()
+    registers = list()
     for line in lines:
         parts = line.split(" ")
         claim_id = int(parts[0][1:])
@@ -13,27 +20,24 @@ def parse_data(lines):
         size = parts[3].split("x")
         w = int(size[0])
         h = int(size[1])
-        claims.append((claim_id, r, c, w, h))
-    return claims
+        registers.append((claim_id, get_coordinates(r, c, w, h)))
+    return registers
 
-def get_total_overlaped(claims):
-    overlaped = set()
+def get_total_overlaped(registers):
+    overlapped = set()
     visited = set()
-    for _, r, c, w, h in claims:
-        for dr in range(h):
-            for dc in range(w):
-                square = (r + dr, c + dc)
-                if square in visited:
-                    overlaped.add(square)
-                    continue
-                else:
-                    visited.add(square)
-    return len(overlaped)
+    for _, coordinates in registers:
+        for coordinate in coordinates:
+            if coordinate in visited:
+                overlapped.add(coordinate)
+            else:
+                visited.add(coordinate)
+    return len(overlapped)
 
 def do_part_1() -> bool:
     logger.info("Part 1")
     lines = read_file("data/input.txt")
-    claims = parse_data(lines)
-    total = get_total_overlaped(claims)
+    registers = parse_data(lines)
+    total = get_total_overlaped(registers)
     logger.info(f"Total: {total}")
     return 116920 == total
