@@ -20,13 +20,14 @@ def parse_data(lines):
         size = parts[3].split("x")
         w = int(size[0])
         h = int(size[1])
-        registers.append((claim_id, get_coordinates(r, c, w, h)))
+        registers.append((claim_id, (r,c,w,h)))
     return registers
 
 def get_total_overlaped(registers):
     overlapped = set()
     visited = set()
-    for _, coordinates in registers:
+    for _, rectangle in registers:
+        coordinates = get_coordinates(*rectangle)
         for coordinate in coordinates:
             if coordinate in visited:
                 overlapped.add(coordinate)

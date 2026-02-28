@@ -11,7 +11,7 @@ def get_coordinates(r, c, w, h):
 
 
 def parse_data(lines):
-    registers = list()
+    pieces = list()
     for line in lines:
         parts = line.split(" ")
         claim_id = int(parts[0][1:])
@@ -21,28 +21,32 @@ def parse_data(lines):
         size = parts[3].split("x")
         w = int(size[0])
         h = int(size[1])
-        registers.append((claim_id, get_coordinates(r, c, w, h)))
-    return registers
+        pieces.append((claim_id, (r,c,w,h)))
+    return pieces
 
+def are_overlapped(area_1,area_2):
+    r1, c1, w1, h1 = area_1
+    r2, c2, w2, h2 = area_2
+    horizontal_overlapped = (c1 <= c2 + w2) and (c2 <= c1 + w1)
+    vertical_overlapped = (r1 <= r2 + h2) and (r2 <= r1 + h1)
+    return horizontal_overlapped and vertical_overlapped
 
-def get_not_overlaped_id(registers):
-    owners = dict() # coordinate -> register id
+def get_not_overlaped_id(pieces):
     overlapped = set()
-    visited = set()
-    for id, coordinates in registers:
-        visited.add(id)
-        for coordinate in coordinates:
-            if coordinate in owners:
-                overlapped.add(owners[coordinate])
-                overlapped.add(id)
-            else:
-                owners[coordinate] = id
-    return (visited - overlapped).pop()
+    all_ids = {id for id,_ in pieces}
+    for i in range(len(pieces)):
+        for j in range(i+1, len(pieces)):
+            id_1,area_1 = pieces[i]
+            id_2,area_2 = pieces[j]
+            if are_overlapped(area_1, area_2):
+                overlapped.add(id_1)
+                overlapped.add(id_2)
+    return (all_ids - overlapped).pop()
 
 def do_part_2() -> bool:
     logger.info("Part 2")
     lines = read_file("data/input.txt")
-    registers = parse_data(lines)
-    not_overlaped_id = get_not_overlaped_id(registers)
+    pieces = parse_data(lines)
+    not_overlaped_id = get_not_overlaped_id(pieces)
     logger.info(f"Not overlaped ID: {not_overlaped_id}")
     return 382 == not_overlaped_id
