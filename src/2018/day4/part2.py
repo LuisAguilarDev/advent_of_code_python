@@ -5,41 +5,76 @@ from global_utils.utils import read_file
 from global_utils.logger import logger
 
 
-def parse_data(lines):
+def parse_data(lines: list[str]) -> dict[int, list[tuple[int, int]]]:
+    """
+    Parses raw log lines into datetime-action pairs, and returns nap
+    intervals grouped by guard ID.
+    
+    Args:
+        lines: Raw log lines in format "[YYYY-MM-DD HH:MM] action"
+    
+    Returns:
+        Dict mapping guard ID to list of (min_sleep_start, min_wake_up) tuples.
+    """
     actions = list()
     for line in lines:
         parts = line.split("]")
-        date = parts[0][1:]
+        date = datetime.strptime(parts[0][1:], "%Y-%m-%d %H:%M")
         actions.append((date, parts[1].strip()))
-    return actions
+    return get_naps_by_guard(actions)
 
 
-def get_naps_by_guard(sorted_actions):
+def get_naps_by_guard(actions: list[tuple[datetime, str]]):
+    """
+    Groups nap intervals by guard ID from a chronologically sorted list of actions.
+
+    Args:
+        sorted_actions: Sorted list of (datetime, action_string) tuples.
+
+    Returns:
+        Dict mapping guard ID to list of (min_sleep_start, min_wake_up) minute tuples.
+    """
+    actions = sorted(actions)
     naps_by_guard = defaultdict(list)
-    guard = 0
-    start = 0
-    for date, action in sorted_actions:
-        minute = int(date.split(":")[1])
+    guard, start = None, None
+    for date, action in actions:
+        minute = date.minute
         if "begins shift" in action:
             guard = int(action.split("#")[1].split()[0])
         elif "falls asleep" in action:
             start = minute
         elif "wakes up" in action:
-            naps_by_guard[guard].append((minute - start, start))
+            naps_by_guard[guard].append((start, minute - 1))
     return naps_by_guard
 
 
 def get_best_minute(naps):
-    counter = Counter()
-    for duration, start in naps:
-        counter.update(range(start, start + duration))
-    return counter.most_common(1)[0]
+    """
+    Finds the minute most frequently slept through and its frequency for a guard.
+
+    Args:
+        naps: List of (min_sleep_start, min_wake_up) minute tuples.
+
+    Returns:
+        Tuple of (minute, count) with the highest sleep frequency.
+    """
+    counter = Counter()  # {minute: count}
+    for start, end in naps:
+        counter.update(range(start, end + 1))
+    return counter.most_common(1)[0]  # (minute, count)
 
 
-def get_best_guard_and_minute(sorted_actions):
-    naps_by_guard = get_naps_by_guard(sorted_actions)
-    best_guard = -1
-    best_minute = -1
+def get_best_guard_and_minute(naps_by_guard):
+    """
+    Finds the guard with the highest frequency on any single minute.
+
+    Args:
+        naps_by_guard: Dict mapping guard ID to list of (min_sleep_start, min_wake_up) minute tuples.
+
+    Returns:
+        Tuple of (guard_id, most_slept_minute).
+    """
+    best_guard, best_minute = None, None
     best_count = 0
     for guard, naps in naps_by_guard.items():
         minute, count = get_best_minute(naps)
@@ -53,10 +88,8 @@ def get_best_guard_and_minute(sorted_actions):
 def do_part_2() -> bool:
     logger.info("Part 2")
     lines = read_file("data/input.txt")
-    actions = parse_data(lines)
-    sorted_actions = sorted(actions, key=lambda x: datetime.strptime(
-        x[0], "%Y-%m-%d %H:%M"))
-    best_guard, best_minute = get_best_guard_and_minute(sorted_actions)
+    naps_by_guard = parse_data(lines)
+    best_guard, best_minute = get_best_guard_and_minute(naps_by_guard)
     result = best_guard * best_minute
     logger.info(f"Result: {result}")
     return 141071 == result
