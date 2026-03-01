@@ -1,6 +1,6 @@
 from test_utils import load_module
 from global_utils.utils import read_file
-
+from global_utils.logger import logger
 part1 = load_module("src/2018/day4/part1.py")
 part2 = load_module("src/2018/day4/part2.py")
 
@@ -14,9 +14,11 @@ def test_single_guard_single_nap():
         "[1518-11-01 00:00] Guard #10 begins shift",
         "[1518-11-01 00:04] falls asleep",
         "[1518-11-01 00:10] wakes up",
-        "[1518-11-01 00:03] falls asleep",
-        "[1518-11-01 00:05] wakes up",
+        "[1518-11-02 00:00] Guard #10 begins shift",
+        "[1518-11-02 00:03] falls asleep",
+        "[1518-11-02 00:05] wakes up",
     ])
+    assert naps[10] == [(4, 9), (3, 4)]
     guard, minute = part1.get_best_guard_and_minute(naps)
     assert guard == 10
     assert minute == 4 # el 4 esta en las dos siestas
@@ -32,10 +34,11 @@ def test_single_guard_overlapping_minute():
         "[1518-11-02 00:07] falls asleep",
         "[1518-11-02 00:12] wakes up",
     ])
+    assert naps[10] == [(5,9),(7,11)]
     guard, minute = part1.get_best_guard_and_minute(naps)
     assert guard == 10
     # Siesta 1: min 5,6,7,8,9 | Siesta 2: min 7,8,9,10,11
-    # min 7,8,9 tienen freq 2 -> most_common devuelve 7
+    # min 7,8,9 tienen freq 2 -> most_common devuelve 7 influye el orden de inserción
     assert minute == 7
 
 
@@ -49,7 +52,7 @@ def test_two_guards_most_total_sleep_wins():
         "[1518-11-02 00:05] falls asleep",
         "[1518-11-02 00:10] wakes up",
     ])
-    guard, minute = part1.get_best_guard_and_minute(naps)
+    guard, _ = part1.get_best_guard_and_minute(naps)
     # Guard 10: 30 min totales | Guard 99: 5 min totales
     assert guard == 10
 
@@ -85,6 +88,7 @@ def test_one_minute_nap():
         "[1518-11-01 00:30] falls asleep",
         "[1518-11-01 00:31] wakes up",
     ])
+    assert naps[10] == [(30,30)]
     guard, minute = part1.get_best_guard_and_minute(naps)
     assert guard == 10
     assert minute == 30
@@ -154,7 +158,7 @@ def test_p2_repeated_minute_same_guard():
 def test_p2_frequency_beats_total_sleep():
     naps = part2.parse_data([
         "[1518-11-01 00:00] Guard #10 begins shift",
-        "[1518-11-01 00:00] falls asleep",
+        "[1518-11-01 00:01] falls asleep",
         "[1518-11-01 00:50] wakes up",
         "[1518-11-02 00:00] Guard #99 begins shift",
         "[1518-11-02 00:20] falls asleep",
@@ -171,13 +175,13 @@ def test_p2_frequency_beats_total_sleep():
     # Guard 99: 6 min totales, min 20,21 tienen freq 3
     assert guard == 99
     assert minute == 20
+    assert minute * guard == 1980
 
 
 ## Caso 4: Datos desordenados
 def test_p2_unsorted_input():
     naps = part2.parse_data([
         "[1518-11-02 00:10] wakes up",
-        "[1518-11-01 00:00] Guard #10 begins shift",
         "[1518-11-02 00:05] falls asleep",
         "[1518-11-01 23:58] Guard #10 begins shift",
     ])
