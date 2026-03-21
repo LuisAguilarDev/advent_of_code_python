@@ -14,14 +14,14 @@ def get_reacted_polymer(polymer):
 
 def get_shortest_polymer(polymer) -> int:
     units = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    best = float("inf")
+    best_length = len(polymer)
     for unit in units:
         c_polymer = polymer.replace(unit, "").replace(unit.lower(), "")
-        f_polymer = get_reacted_polymer(c_polymer)
-        largo = len(f_polymer)
-        if largo < best:
-            best = largo
-    return best
+        r_polymer = get_reacted_polymer(c_polymer)
+        new_length = len(r_polymer)
+        if new_length < best_length:
+            best_length = new_length
+    return best_length
 
 
     
