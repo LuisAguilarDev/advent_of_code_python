@@ -74,7 +74,7 @@ def get_best_guard_and_minute(naps_by_guard):
     Returns:
         Tuple of (guard_id, most_slept_minute).
     """
-    guard = max(naps_by_guard, key=lambda g: sum(end - start for start, end in naps_by_guard[g]))
+    guard = max(naps_by_guard, key=lambda g: sum(end - start + 1 for start, end in naps_by_guard[g]))
     minute = get_best_minute(naps_by_guard[guard])
     return (guard, minute)
 
