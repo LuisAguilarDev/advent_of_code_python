@@ -1,6 +1,6 @@
 from global_utils.logger import logger
-from .part1 import do_part_1
-from .part2 import do_part_2
+from ._part1 import do_part_1
+from ._part2 import do_part_2
 
 
 def main() -> None:
