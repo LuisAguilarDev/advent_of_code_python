@@ -1,2 +1,2 @@
 pytest-cov
-ortools
+ortoolsmatplotlib==3.10.8
