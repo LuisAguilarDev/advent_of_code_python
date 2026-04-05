@@ -55,7 +55,7 @@ def get_time(lines, workers, base_time):
 
 def do_part_2() -> bool:
     logger.info("Part 2")
-    lines = read_file("data/input.txt")
-    time = get_time(lines, workers=5, base_time=60)
+    graph = read_file("data/input.txt")
+    time = get_time(graph, workers=5, base_time=60)
     logger.info(f"time: {time}")
     return 1107 == time

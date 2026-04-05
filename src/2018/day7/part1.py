@@ -4,6 +4,9 @@ from global_utils.logger import logger
 
 
 def parse_data(lines):
+    """
+    returns an adjacency list {A:[B,C]}
+    """
     adjacency_list = defaultdict(list)
 
     for line in lines:
@@ -13,7 +16,7 @@ def parse_data(lines):
     return adjacency_list
 
 
-def get_order(adjacency_list):
+def get_order(adjacency_list:dict) -> str:
     nodes = set()
     nodes_required = defaultdict(int)
 
