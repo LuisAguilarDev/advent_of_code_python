@@ -1,7 +1,7 @@
 import re
 from collections import deque
 
-from constants.constants import all_directions
+from src.constants.constants import all_directions
 from global_utils.utils import read_file
 from global_utils.logger import logger
 
@@ -71,12 +71,13 @@ def render_message(points: list[tuple[int, int, int, int]], t: int) -> str:
 
 
 def do_part_1() -> bool:
-    logger.info("Part 1")
     lines: list[str] = read_file("data/input.txt")
     points = parse_data(lines)
-    # t = find_message_time(points)
-    # message = render_message(points, t)
-    t = 10831
+    t = find_message_time(points)
+    t += 1
     message = render_message(points, t)
-    logger.info(f"Message at t={t}:\n{message}")
+    logger.info("Part 1")
+    logger.info(f"Message:\n{message}")
+    logger.info("Part 2")
+    logger.info(f"Message show at time={t}")
     return True
