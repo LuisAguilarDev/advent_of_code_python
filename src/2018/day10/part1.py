@@ -29,30 +29,41 @@ def bfs(start: tuple[int, int], positions_set: set, visited: set) -> int:
                 queue.append(neighbor)
     return count
 
+# Lo mas importante es mostrar el proceso de pensamiento, no el resultado final.
+# El resultado final es solo una consecuencia de un proceso de razonamiento riguroso y meticuloso.
 
 def find_message_time(points: list[tuple[int, int, int, int]]) -> int:
     """Find the time when points converge to form a message using BFS clustering."""
-    n = len(points)
-    max_cluster_size = 0
-    best_time = 0
-
-    for t in range(1, 20000):
+    t = 0
+    while True:
         positions = [(px + vx * t, py + vy * t) for px, py, vx, vy in points]
         positions_set = set(positions)
-        visited: set[tuple[int, int]] = set()
-
-        for pos in positions:
-            if pos not in visited:
-                cluster_size = bfs(pos, positions_set, visited)
-                if cluster_size > max_cluster_size:
-                    max_cluster_size = cluster_size
-                    best_time = t
-
-        if max_cluster_size > n * 0.5:
+        
+        is_valid = validate_groups(positions_set)
+        if is_valid:
             break
+        t += 1 
+    return t
 
-    return best_time
 
+def validate_groups(positions_set: set[tuple[int, int]]) -> bool:
+    """Return True if no point is completely isolated (all points are connected)."""
+
+    for pos in positions_set:
+        x, y = pos
+        has_neighbor = False
+        for dx, dy in all_directions:
+            neighbor_x = x + dx
+            neighbor_y = y + dy
+            neighbor = (neighbor_x, neighbor_y)
+
+            if neighbor in positions_set:
+                has_neighbor = True
+                break
+        if not has_neighbor:
+            return False  # isolated point found → not the message yet
+
+    return True
 
 def render_message(points: list[tuple[int, int, int, int]], t: int) -> str:
     positions = set((px + vx * t, py + vy * t) for px, py, vx, vy in points)
@@ -74,7 +85,6 @@ def do_part_1() -> bool:
     lines: list[str] = read_file("data/input.txt")
     points = parse_data(lines)
     t = find_message_time(points)
-    t += 1
     message = render_message(points, t)
     logger.info("Part 1")
     logger.info(f"Message:\n{message}")
